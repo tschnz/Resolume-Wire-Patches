@@ -1,0 +1,300 @@
+/*{
+    "CREDIT": "",
+    "DESCRIPTION": "",
+    "CATEGORIES": [ "generator" ],
+    "INPUTS": [
+        {
+            "TYPE": "image",
+            "NAME": "AGENT_POS",
+            "LABEL": "Agent Position"
+        },
+        {
+            "TYPE": "image",
+            "NAME": "TRAIL_MAP",
+            "LABEL": "Trail Map"
+        },
+        {
+            "TYPE": "float",
+            "NAME": "TRAIL_AFFINITY",
+            "LABEL": "Trail Affinity"
+        },
+        {
+            "TYPE": "image",
+            "NAME": "AGENT_MAP",
+            "LABEL": "Agent Map"
+        },
+        {
+            "TYPE": "float",
+            "NAME": "AGENT_AFFINITY",
+            "LABEL": "Agent Affinity"
+        },
+        {
+            "TYPE": "image",
+            "NAME": "ENV_MAP",
+            "LABEL": "Environment Map"
+        },
+        {
+            "TYPE": "float",
+            "NAME": "ENV_AFFINITY",
+            "LABEL": "Environment Affinity"
+        },
+        { 
+            "TYPE": "float",
+            "NAME": "SA",
+            "LABEL": "Sensor Angle"
+        },
+        {
+            "TYPE": "float",
+            "NAME": "SO",
+            "LABEL": "Sensor Offset"
+        },
+        {
+            "TYPE": "float",
+            "NAME": "RA",
+            "LABEL": "Random Angle"
+        },
+        {
+            "TYPE": "float",
+            "NAME": "SS",
+            "LABEL": "Step Size"
+        },
+        {
+            "TYPE": "float",
+            "NAME": "OOB",
+            "LABEL": "Out of Bounds"
+        },
+        {
+            "TYPE": "float",
+            "NAME": "BORDER",
+            "LABEL": "Border"
+        }, 
+        {
+            "TYPE": "float",
+            "NAME": "MAP_W",
+            "LABEL": "Map Width"
+        },
+        { 
+            "TYPE": "float",
+            "NAME": "MAP_H",
+            "LABEL": "Map Height"
+        }
+    ]
+}*/
+
+/* GPL-3 License Disclaimer
+*
+* Physarum ISF shader to be used in Resolume Wire
+* Copyright (C) 2024  Jens W. Schindel
+*
+* This program is free software: you can redistribute it and/or modify
+* it under the terms of the GNU General Public License as published by
+* the Free Software Foundation, either version 3 of the License, or
+* (at your option) any later version.
+*
+* This program is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+* GNU General Public License for more details.
+*
+* You should have received a copy of the GNU General Public License
+* along with this program. If not, see <http://www.gnu.org/licenses/>.
+*/
+
+const float PI = 3.141592653589793;
+const float PI_2 = 6.283185307179586;
+const float PI_H = 1.5707963267948966;
+
+vec2 mapSize = vec2(MAP_W, MAP_H);
+vec2 aspectRatio = mapSize.x < mapSize.y ? vec2(1.0, mapSize.y / mapSize.x) : vec2(mapSize.x / mapSize.y, 1.0); 
+vec2 borderMin = vec2(BORDER) * 1/aspectRatio;
+vec2 borderMax = 1.0  - borderMin;
+
+int oobAction = int(floor(OOB));
+
+float toLuma(vec3 color) {
+    return dot(color, vec3(0.2126, 0.7152, 0.0722));
+}
+
+float toAvg(vec3 color) {
+    return (color.r + color.g + color.b) / 3.0;
+}
+
+float rand(vec2 co){
+    return fract(sin(dot(co.xy ,vec2(12.9898,78.233))) * 43758.5453);
+}
+
+vec2 wrapAtBorders(vec2 pos) {
+    if(pos.x < borderMin.x) pos.x = borderMax.x - (borderMin.x - pos.x);
+    if(pos.x > borderMax.x) pos.x = borderMin.x + (pos.x - borderMax.x);
+    if(pos.y < borderMin.y) pos.y = borderMax.y - (borderMin.y - pos.y);
+    if(pos.y > borderMax.y) pos.y = borderMin.y + (pos.y - borderMax.y);
+    return pos;
+}
+
+vec2 calcPositionRad(vec2 pos, float rad, vec2 dist) {
+    vec2 direction = vec2(cos(rad), sin(rad));
+    vec2 newPos = pos + dist * direction;
+    if(oobAction == 0) // Wrap
+        newPos = wrapAtBorders(newPos);
+
+    return newPos;
+}
+
+vec3 bounce(vec2 oldPos, vec2 newPos, vec2 minVal, vec2 maxVal) {
+    vec2 motionVector = (newPos - oldPos);
+    vec2 agentPosInterpolated = (newPos + oldPos) * 0.5;
+    vec2 clampedPos = clamp(agentPosInterpolated, minVal, maxVal);
+
+    vec2 normal = vec2(0.0);
+    if(newPos.x <= minVal.x) normal.x = -1.0;
+    if(newPos.x >= maxVal.x) normal.x = 1.0;
+    if(newPos.y <= minVal.y) normal.y = -1.0;
+    if(newPos.y >= maxVal.y) normal.y = 1.0;
+
+    vec2 reflection = reflect(motionVector * aspectRatio, normal);
+    float phase = atan(reflection.y, reflection.x) / PI_2;
+
+    return vec3(clampedPos,  mod(phase, 1.0));
+}
+
+bool outsideBorders(vec2 pos) {
+    return pos.x >= borderMax.x || pos.x <= borderMin.x || pos.y >= borderMax.y || pos.y <= borderMin.y;
+}
+
+vec3 updateAgent(vec2 pos, float dir, vec2 ss) {
+    vec2 newPos = calcPositionRad(pos, dir * PI_2 , ss);
+
+    if(outsideBorders(newPos))
+    {
+        if(oobAction == 0) // Wrap
+        {
+            newPos = wrapAtBorders(newPos);
+        }
+        else if(oobAction == 1) { // Bounce
+            vec3 reflection = bounce(pos, newPos, vec2(borderMin), vec2(borderMax));
+            dir = reflection.z;
+
+            newPos = calcPositionRad(reflection.xy, dir * PI_2, ss);
+        }
+        else if(oobAction == 2) { // Respawn
+            newPos = vec2(rand(pos), rand(pos * 0.42)) * (borderMax - borderMin) + borderMin;
+        }
+
+        return vec3(newPos, dir);
+    }
+	
+	// Clamp to borders
+    newPos = clamp(newPos, borderMin, borderMax);
+
+    return vec3(newPos, dir); 
+}
+
+float getTrailMapValue(vec2 pos) {
+
+    if(oobAction != 0 && outsideBorders(pos))
+        return 0.0;
+
+    vec4 color = IMG_NORM_PIXEL(TRAIL_MAP, pos);
+    return toLuma(color.rgb);
+}
+
+float getAgentMapValue(vec2 pos) {
+
+    if(oobAction != 0 && outsideBorders(pos))
+        return 0.0;
+
+    vec4 color = IMG_NORM_PIXEL(AGENT_MAP, pos);
+    return toAvg(color.rgb);
+}
+
+float getEnvMapValue(vec2 pos) {
+
+    if(oobAction != 0 && outsideBorders(pos))
+        return 0.0;
+
+    vec4 color = IMG_NORM_PIXEL(ENV_MAP, pos);
+    return toAvg(color.rgb);
+}
+
+// Function to decide agent direction based on sensor values (vectorized)
+float decideAgentDirection(vec3 sensorValueLFR, float ra, float rnd) {
+    // Decide the agent direction based on the sensor values
+    float dir = 0.0;
+
+    // Front sensor is the strongest
+    if(sensorValueLFR.y > sensorValueLFR.x && sensorValueLFR.y > sensorValueLFR.z) {
+        // Stay facing the same direction
+        dir = 0.0;
+    // Front sensor is the weakest
+    } else if(sensorValueLFR.y < sensorValueLFR.x && sensorValueLFR.y < sensorValueLFR.z) {
+        // Rotate randomly left or right by uniform val ra
+        dir = ra  * (rnd * 2.0 - 1.0); 
+    // Left sensor is the strongest
+    } else if(sensorValueLFR.x > sensorValueLFR.z) {
+        // Rotate left by ra
+        dir =  ra * rnd;
+    // Right sensor is the strongest
+    } else if(sensorValueLFR.z > sensorValueLFR.x){
+        // Rotate right by ra
+        dir = -ra * rnd;
+    // All sensors are equal
+    } else {
+        // Stay facing the same direction
+        dir = 0.0;
+    }
+
+    return dir;
+}
+
+vec3 biggestToOne(vec3 values) {
+    float biggest = max(values.r, max(values.g, values.b));
+    return vec3(values.r == biggest, values.g == biggest, values.b == biggest);
+}
+
+void main() { 
+    // SENSOR OFFSET
+    vec2 so = vec2(SO / MAP_W, SO / MAP_H); 
+    // SENSOR ANGLE
+    float sa = SA * PI;
+    // RANDOM ANGLE (as phase, between 0 = straight and 0.5 = full left/right turn)
+    float ra = RA * 0.5;
+
+    // Get agent position and direction stored in the agentPos image
+    vec4 agentVec = IMG_NORM_PIXEL(AGENT_POS, isf_FragNormCoord.xy);
+    vec4 agentVecNext = agentVec;
+    vec2 agentPos = agentVec.xy;
+    float agentDirRad = agentVec.z * PI_2;
+
+    /* Get trail map color for the 3 sensors. One sensor is in front of the agent, 
+        the other two are on the left and right side of the agent at an angle SA.
+        The offset distance of all sensors to the agent is SO.
+
+        The agent will move in the direction of the sensor with the highest value.
+        He does so by randomly choosing a direction between [-RA,0] (right signal stronges) and [0,RA] (left signal strongest).
+        If the front sensor is the strongest, the agent will stay in the same direction.
+        If the front sensor is the weakest, the agent will randomly turn left or right between [-RA,+RA].
+    */
+
+    // left/right to the agent direction
+    vec2 sensorF = calcPositionRad(agentPos, agentDirRad, so);
+    vec2 sensorL = calcPositionRad(agentPos, agentDirRad + sa, so);
+    vec2 sensorR = calcPositionRad(agentPos, agentDirRad - sa, so);
+ 
+    // Get the sensor values
+    vec3 trailValues = vec3(getTrailMapValue(sensorL), getTrailMapValue(sensorF), getTrailMapValue(sensorR));
+    vec3 agentValues = vec3(getAgentMapValue(sensorL), getAgentMapValue(sensorF), getAgentMapValue(sensorR));
+    vec3 envValues = vec3(getEnvMapValue(sensorL), getEnvMapValue(sensorF), getEnvMapValue(sensorR));
+
+    // Decide the agent direction based on the sensor values left/front/right = .xyz
+    float trailDir = decideAgentDirection(trailValues, ra * TRAIL_AFFINITY, rand(sensorF));
+    float agentDir = decideAgentDirection(agentValues, ra * AGENT_AFFINITY, rand(sensorL));
+    float envDir = decideAgentDirection(envValues, ra * ENV_AFFINITY, rand(sensorR));
+
+    // Add the directions together
+    float dir = clamp(trailDir + agentDir + envDir, -ra, ra);
+ 
+    // Influence the agents direction based on it's sensors
+    agentVecNext.xyz = updateAgent(agentPos, mod(agentVec.z + dir, 1), vec2(SS / MAP_W, SS / MAP_H));
+
+    gl_FragColor = agentVecNext;
+}

@@ -1,0 +1,47 @@
+
+/*{
+    "CREDIT": "",
+    "DESCRIPTION": "",
+    "CATEGORIES": [ "generator" ],
+    "INPUTS": [
+        {
+            "TYPE": "image",
+            "NAME": "agents",
+            "LABEL": "Agents",
+        }
+    ]
+}*/
+
+/*
+ISF Reference
+=-=-=-=-=-=-=
+
+1) Valid inputs:
+    - "event"
+    - "bool"
+    - "long"
+    - "float"
+    - "point2D"
+    - "color"
+    - "image"
+    - "audio"
+    - "audioFFT"
+
+2) Functions:
+    - IMG_NORM_PIXEL() -> get a pixel from input with normalized coordinates
+    - IMG_PIXEL() -> get a pixel from input with screen space coordinates
+
+3) Predefined variables:
+    - RENDERSIZE (resolution of the shader)
+    - TIME (run time)
+    - gl_FragCoord.xy (screen space coordinates of current fragment)
+    - isf_FragNormCoord.xy (normalized coordinates)
+
+To learn more see:
+https://github.com/mrRay/ISF_Spec/
+*/
+
+void main() {
+	vec4 agentsStatus = IMG_NORM_PIXEL(agents, isf_FragNormCoord.xy);	
+    gl_FragColor = vec4(vec3(hasAgent),1.0);
+}
