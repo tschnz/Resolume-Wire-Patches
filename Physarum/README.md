@@ -2,7 +2,7 @@
 ![Wire logo recreated with physarum patch](img/wire_logo_physarum.png)
 
 ## General Idea
-Every agent has 3 sensors. One in front and two to the side. The agent will decide if it turns left, right, or stays on it's path, depending on what it sees with it's sensor. If it turns left/right, it will do so randomly witin a given movement angle. 
+Every agent has 3 sensors. One in front and two to the side. The agent will decide if it turns left, right, or stays on it's path, depending on what it sees with it's sensor. If it turns left/right, it will do so randomly within a given movement angle. 
 
 ![Slime mold agent behavior, depicted by Sage Johnson](img/diagram.jpg)
 
