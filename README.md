@@ -1,6 +1,6 @@
 # Wire Patches
 
-This is a collection of [Resolume](https://resolume.com/) Wire patches from a Resolume developer. It's probably going to be something between case studies and actually useful stuff. 
+This is a private collection of [Resolume](https://resolume.com/) Wire patches. Something between case studies and actually useful stuff. 
 
 ## Legal Disclaimer
 
@@ -8,9 +8,10 @@ Everything is under **GPL-3** license which means you may use it commercially. H
 
 For more info see https://www.tldrlegal.com/license/gnu-general-public-license-v3-gpl-3
 
-Why you may ask? Because I'm not a fan of gate keeping art.
+(not a fan of gate keeping art)
 
 ## Patches
 
 ### Physarum
 An agent based system that behaves like the Physarum slime mold.
+![Wire logo recreated with physarum patch](Physarum/img/Physarum_thumbnail-still.png)
