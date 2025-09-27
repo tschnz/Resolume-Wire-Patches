@@ -13,5 +13,7 @@ For more info see https://www.tldrlegal.com/license/gnu-general-public-license-v
 ## Patches
 
 ### Physarum
-An agent based system that behaves like the Physarum slime mold.
 ![Wire logo recreated with physarum patch](Physarum/img/Physarum_thumbnail-still.png)
+
+### Color Channel Swizzler
+![Test image](ColorChannelSwizzler/img/CCC-thumbnail-still.png)
