@@ -13,7 +13,9 @@ For more info see https://www.tldrlegal.com/license/gnu-general-public-license-v
 ## Patches
 
 ### Physarum
+
 ![Wire logo recreated with physarum patch](Physarum/img/Physarum_thumbnail-still.png)
 
 ### Color Channel Mixer
-![Test image](ColorChannelMixer/img/CCM-colowheel.png)
+
+![Test image](ColorChannelMixer/img/CCM-colorwheel.png)
