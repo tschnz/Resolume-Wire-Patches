@@ -8,8 +8,6 @@ Everything is under **GPL-3** license which means you may use it commercially. H
 
 For more info see https://www.tldrlegal.com/license/gnu-general-public-license-v3-gpl-3
 
-(not a fan of gate keeping art)
-
 ## Patches
 
 ### Physarum
