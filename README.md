@@ -17,3 +17,7 @@ For more info see https://www.tldrlegal.com/license/gnu-general-public-license-v
 ### Color Channel Mixer
 
 ![Test image](ColorChannelMixer/img/CCM-colorwheel.png)
+
+### Unsharp Masking Balanced
+
+![Preview of Unsharp Masking Balanced patch](UnsharpMaskingBalanced/img/unsharp_mask_preview.png)
