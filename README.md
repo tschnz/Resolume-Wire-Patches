@@ -10,14 +10,26 @@ For more info see https://www.tldrlegal.com/license/gnu-general-public-license-v
 
 ## Patches
 
-### Physarum
+### Color Channel Mixer (Effect)
 
-![Wire logo recreated with physarum patch](Physarum/img/Physarum_thumbnail-still.png)
-
-### Color Channel Mixer
+Turns R, G, B channels into any other color, basically a rotation in color space.
 
 ![Test image](ColorChannelMixer/img/CCM-colorwheel.png)
 
-### Unsharp Masking Balanced
+### Conway's Game of Life (Effect)
+
+Cellular automaton simulating Conway's Game of Life. Input can be used as seed and the input movement influences the simulation.
+
+![Game of Life simulation](InteractiveGameOfLife/img/gol_preview.png)
+
+### Physarum (Effect)
+
+Particle system simulating the behavior of *Physarum polycephalum* (slime mold). Particles can bee steered by an input image. 
+
+![Wire logo recreated with physarum patch](Physarum/img/Physarum_thumbnail-still.png)
+
+### Unsharp Masking Balanced (Effect)
+
+Unsharp Masking / Sharpening effect but with Threshold for noise reduction and Balance to control the amount of darkening vs brightening around edges.
 
 ![Preview of Unsharp Masking Balanced patch](UnsharpMaskingBalanced/img/unsharp_mask_preview.png)
