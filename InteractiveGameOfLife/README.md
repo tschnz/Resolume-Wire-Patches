@@ -8,6 +8,6 @@ Cellular automaton simulating Conway's Game of Life. Input can be used as seed a
 | Threshold  | Float   | How much the input influences the simulation.                                   |
 | Wrap Edges | Bool    | Whether the edges of the simulation wrap around.                                |
 | Reset      | Trigger | Resets the simulation to the initial state. Uses the thresholded input as seed. |
-|            |
+
 ## Preview
-<video width="800" controls src=""></video>
+<video width="800" controls src="https://github.com/user-attachments/assets/8b59cb00-5932-4c48-984a-01de5afd1b3b"></video>

@@ -20,7 +20,7 @@ Turns R, G, B channels into any other color, basically a rotation in color space
 
 Cellular automaton simulating Conway's Game of Life. Input can be used as seed and the input movement influences the simulation.
 
-![Game of Life simulation](InteractiveGameOfLife/img/gol_preview.png)
+![Game of Life simulation](InteractiveGameOfLife/img/gol_preview.gif)
 
 ### Physarum (Effect)
 
