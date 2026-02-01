@@ -12,7 +12,7 @@ For more info see https://www.tldrlegal.com/license/gnu-general-public-license-v
 
 ### Color Channel Mixer (Effect)
 
-Turns R, G, B channels into any other color, basically a rotation in color space.
+Turns R, G, B channels into any other color while it's possible to preserving overall luminance. Basically a base vector rotation in color space.
 
 ![Test image](ColorChannelMixer/img/CCM-colorwheel.png)
 
