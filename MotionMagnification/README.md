@@ -22,4 +22,4 @@ Based on [EVM: Eulerian Video Magnification for Revealing Subtle Changes in the 
 | LoD 5 (High)      | Float | How much the highest level of detail should be amplified (higher values mean smaller things like random noise are amplified) |
 
 ## Preview
-<video width="800" controls src=""></video>
+<video width="800" controls src="https://github.com/user-attachments/assets/254bbe5a-d143-4f78-8301-f6c257fd4b45"></video>
