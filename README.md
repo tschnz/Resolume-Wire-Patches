@@ -22,6 +22,12 @@ Cellular automaton simulating Conway's Game of Life. Input can be used as seed a
 
 ![Game of Life simulation](InteractiveGameOfLife/img/gol_preview.gif)
 
+### Laplace Pyramid Reconstruction (Effect)
+
+Creates a 5 layer Laplace pyramid from the input and then reconstructs the original image from it. Useful for learning about pyramids and multi-scale image processing.
+
+![Laplace Pyramid](LaplacePyramidReconstruction/img/LaplacePyramid0.png)
+
 ### Motion Magnification (Effect)
 
 Real-time motion magnification of small subpixel movements in videos. 
